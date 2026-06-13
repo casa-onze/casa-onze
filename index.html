@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casa Onze — o lar dos produtos Onze</title>
+<meta name="description" content="Casa Onze é um estúdio brasileiro independente de jogos e produtos de mídia. Primeiro da escalação: OnzeFoot, um game de gestão de futebol em desenvolvimento aberto.">
+<meta property="og:title" content="Casa Onze — o lar dos produtos Onze">
+<meta property="og:description" content="Estúdio brasileiro independente. Em campo: OnzeFoot, gestão de futebol com alma de torcedor.">
+<meta property="og:type" content="website">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080"><rect width="1080" height="1080" rx="200" fill="%230E5C43"/><path d="M 540 248 L 798 468 Q 812 480 812 500 L 812 758 Q 812 800 770 800 L 310 800 Q 268 800 268 758 L 268 500 Q 268 480 282 468 Z" fill="%23F5EFE3"/><rect x="468" y="544" width="56" height="196" rx="28" fill="%230E5C43"/><rect x="556" y="544" width="56" height="196" rx="28" fill="%230E5C43"/></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Saira+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --campo:#0E5C43;
+    --campo-2:#0B5039;        /* faixa de grama alternada */
+    --noite:#14211D;          /* verde quase preto */
+    --giz:#F5EFE3;
+    --giz-70:rgba(245,239,227,.7);
+    --giz-45:rgba(245,239,227,.45);
+    --giz-25:rgba(245,239,227,.25);
+    --giz-12:rgba(245,239,227,.12);
+    --ouro:#E9B949;
+    --verde-no-giz:#0C4A36;   /* texto verde sobre creme */
+    --pad-sec:clamp(72px,10vw,128px);
+    --pad-x:clamp(20px,5vw,48px);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Archivo",system-ui,sans-serif;
+    font-weight:400;
+    background-color:var(--campo);
+    /* gramado: faixas largas de poda */
+    background-image:repeating-linear-gradient(
+      90deg,
+      var(--campo) 0px, var(--campo) 110px,
+      var(--campo-2) 110px, var(--campo-2) 220px
+    );
+    color:var(--giz);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--ouro);color:var(--noite)}
+  :focus-visible{outline:3px solid var(--ouro);outline-offset:3px;border-radius:4px}
+
+  .display{
+    font-family:"Archivo",sans-serif;
+    font-stretch:115%;
+    font-weight:800;
+    line-height:1.04;
+    letter-spacing:-.015em;
+  }
+  .eyebrow{
+    font-family:"Saira Condensed",sans-serif;
+    font-weight:600;
+    font-size:clamp(13px,1.4vw,15px);
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--ouro);
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding-inline:var(--pad-x)}
+
+  /* ---------- topo ---------- */
+  header{
+    position:absolute;top:0;left:0;right:0;z-index:10;
+  }
+  .topbar{
+    max-width:1040px;margin:0 auto;
+    padding:22px var(--pad-x);
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .wordmark{
+    display:flex;align-items:center;gap:12px;
+    text-decoration:none;color:var(--giz);
+    font-weight:700;font-size:19px;letter-spacing:.01em;
+  }
+  .wordmark svg{width:36px;height:36px;border-radius:8px;flex:none}
+  .wordmark b{font-weight:800}
+  nav{display:flex;gap:clamp(14px,3vw,30px)}
+  nav a{
+    font-family:"Saira Condensed",sans-serif;
+    font-weight:600;font-size:14px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--giz-70);text-decoration:none;padding:6px 2px;
+    border-bottom:2px solid transparent;
+    transition:color .2s,border-color .2s;
+  }
+  nav a:hover{color:var(--giz);border-color:var(--ouro)}
+
+  /* ---------- hero: círculo central ---------- */
+  .hero{
+    position:relative;
+    min-height:92vh;
+    display:grid;place-items:center;
+    overflow:hidden;
+    padding:140px var(--pad-x) 90px;
+    text-align:center;
+  }
+  .kickoff{
+    position:relative;
+    width:92px;height:92px;
+    margin:0 auto clamp(36px,6vh,64px);
+  }
+  /* linha do meio-campo, atravessa a tela na altura da bola */
+  .halfway{
+    position:absolute;top:50%;left:50%;
+    width:100vw;height:2px;
+    transform:translate(-50%,-50%);
+    background:var(--giz-25);
+    pointer-events:none;
+  }
+  /* círculo central de giz, desenhado no carregamento */
+  .circle-svg{
+    position:absolute;top:50%;left:50%;
+    width:min(560px,118vw);height:min(560px,118vw);
+    transform:translate(-50%,-50%);
+    overflow:visible;pointer-events:none;
+  }
+  .circle-svg circle{
+    fill:none;stroke:var(--giz-25);stroke-width:2;
+    vector-effect:non-scaling-stroke;
+    stroke-dasharray:1;stroke-dashoffset:1;
+    animation:draw 1.6s ease-out .2s forwards;
+    transform:rotate(-90deg);transform-origin:center;
+  }
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .kickoff .logo{
+    position:relative;z-index:2;
+    width:92px;height:92px;border-radius:20px;
+    box-shadow:0 10px 34px rgba(0,0,0,.35);
+  }
+  .hero h1{
+    font-size:clamp(40px,7.4vw,84px);
+    max-width:13ch;margin:0 auto 22px;
+  }
+  .hero h1 .ouro{color:var(--ouro)}
+  .hero .lede{
+    max-width:52ch;margin:0 auto 38px;
+    font-size:clamp(16px,2vw,19px);color:var(--giz-70);
+  }
+  .hero .eyebrow{display:block;margin-bottom:18px}
+  .ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn{
+    font-family:"Saira Condensed",sans-serif;
+    font-weight:600;font-size:15px;letter-spacing:.1em;text-transform:uppercase;
+    text-decoration:none;border-radius:10px;
+    padding:15px 26px;display:inline-block;
+    border:2px solid transparent;
+    transition:transform .18s,box-shadow .18s,background .18s,border-color .18s;
+  }
+  .btn-ouro{background:var(--ouro);color:var(--noite)}
+  .btn-ouro:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.3)}
+  .btn-giz{border:2px solid var(--giz-45);color:var(--giz)}
+  .btn-giz:hover{border-color:var(--giz);background:var(--giz-12);transform:translateY(-2px)}
+
+  /* ---------- seções ---------- */
+  section{padding-block:var(--pad-sec)}
+  .linha-giz{border-top:2px solid var(--giz-25)}
+  .sec-head{margin-bottom:clamp(36px,5vw,56px)}
+  .sec-head h2{
+    font-size:clamp(30px,4.6vw,52px);
+    margin-top:12px;max-width:18ch;
+  }
+
+  /* ---------- escalação ---------- */
+  .roster{list-style:none}
+  .roster li{
+    display:grid;
+    grid-template-columns:76px 1fr auto;
+    gap:clamp(16px,3vw,32px);
+    align-items:center;
+    padding-block:30px;
+    border-bottom:2px dashed var(--giz-25);
+  }
+  .roster li:first-child{border-top:2px dashed var(--giz-25)}
+  .num{
+    width:76px;height:76px;
+    border:2px solid var(--giz-45);border-radius:14px;
+    display:grid;place-items:center;
+    font-family:"Saira Condensed",sans-serif;
+    font-weight:700;font-size:38px;color:var(--giz);
+    transition:background .2s,color .2s,border-color .2s;
+  }
+  .roster li:hover .num{background:var(--ouro);border-color:var(--ouro);color:var(--noite)}
+  .roster h3{
+    font-stretch:115%;font-weight:800;
+    font-size:clamp(21px,2.8vw,27px);letter-spacing:-.01em;
+  }
+  .roster p{color:var(--giz-70);font-size:clamp(15px,1.8vw,16.5px);max-width:56ch;margin-top:4px}
+  .chip{
+    font-family:"Saira Condensed",sans-serif;
+    font-weight:600;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+    padding:8px 14px;border-radius:999px;white-space:nowrap;
+  }
+  .chip-campo{background:var(--ouro);color:var(--noite)}
+  .chip-aquecendo{border:2px solid var(--ouro);color:var(--ouro)}
+  .chip-banco{border:2px solid var(--giz-25);color:var(--giz-45)}
+  .vaga .num{border-style:dashed;color:var(--giz-45)}
+  .vaga:hover .num{background:transparent;border-color:var(--giz-45);color:var(--giz-45)}
+  .vaga h3{color:var(--giz-45)}
+  .legenda{
+    margin-top:22px;color:var(--giz-45);
+    font-family:"Saira Condensed",sans-serif;
+    font-size:13px;letter-spacing:.1em;text-transform:uppercase;
+  }
+
+  /* ---------- OnzeFoot (faixa creme) ---------- */
+  .creme{
+    background:var(--giz);color:var(--verde-no-giz);
+  }
+  .creme .eyebrow{color:var(--verde-no-giz);opacity:.75}
+  .creme h2{color:var(--noite)}
+  .creme .lede{
+    font-size:clamp(16.5px,2.1vw,19px);max-width:60ch;
+    color:#2E4A40;
+  }
+  .creme .honesta{
+    margin-top:26px;padding:22px 26px;
+    border-left:5px solid var(--ouro);
+    background:rgba(14,92,67,.06);
+    border-radius:0 12px 12px 0;
+    max-width:60ch;color:#2E4A40;font-size:clamp(15px,1.9vw,17px);
+  }
+  .fatos{
+    display:flex;flex-wrap:wrap;gap:12px;margin-top:30px;
+  }
+  .fatos span{
+    font-family:"Saira Condensed",sans-serif;
+    font-weight:600;font-size:13.5px;letter-spacing:.12em;text-transform:uppercase;
+    border:2px solid rgba(14,92,67,.35);color:var(--verde-no-giz);
+    padding:9px 16px;border-radius:999px;
+  }
+  .creme .ctas{justify-content:flex-start;margin-top:36px}
+  .btn-verde{background:var(--campo);color:var(--giz)}
+  .btn-verde:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(14,92,67,.35)}
+  .btn-verde-out{border:2px solid rgba(14,92,67,.45);color:var(--verde-no-giz)}
+  .btn-verde-out:hover{border-color:var(--campo);background:rgba(14,92,67,.08);transform:translateY(-2px)}
+
+  /* ---------- a casa ---------- */
+  .quote{
+    font-stretch:115%;font-weight:800;
+    font-size:clamp(26px,4.2vw,44px);line-height:1.15;
+    max-width:24ch;letter-spacing:-.01em;
+  }
+  .quote .ouro{color:var(--ouro)}
+  .casa-txt{max-width:58ch;margin-top:26px;color:var(--giz-70);font-size:clamp(16px,2vw,18px)}
+
+  /* ---------- rodapé ---------- */
+  footer{
+    background:var(--noite);
+    padding:56px var(--pad-x) 44px;
+  }
+  .foot{
+    max-width:1040px;margin:0 auto;
+    display:flex;flex-wrap:wrap;gap:28px;
+    align-items:center;justify-content:space-between;
+  }
+  .foot-links{display:flex;gap:26px}
+  .foot-links a{
+    font-family:"Saira Condensed",sans-serif;
+    font-weight:600;font-size:14px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--giz-70);text-decoration:none;
+    border-bottom:2px solid transparent;
+    transition:color .2s,border-color .2s;
+  }
+  .foot-links a:hover{color:var(--giz);border-color:var(--ouro)}
+  .foot small{
+    display:block;width:100%;margin-top:8px;
+    color:var(--giz-45);font-size:13.5px;
+  }
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media (max-width:640px){
+    nav{display:none}
+    .roster li{grid-template-columns:60px 1fr;row-gap:12px}
+    .num{width:60px;height:60px;font-size:30px;border-radius:12px}
+    .chip{grid-column:2;justify-self:start}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .circle-svg circle{animation:none;stroke-dashoffset:0}
+    .reveal{opacity:1;transform:none;transition:none}
+    .btn,.num,nav a{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <a class="wordmark" href="#" aria-label="Casa Onze — início">
+      <svg viewBox="0 0 1080 1080" role="img" aria-hidden="true">
+        <rect width="1080" height="1080" rx="170" fill="#0E5C43"/>
+        <path d="M 540 248 L 798 468 Q 812 480 812 500 L 812 758 Q 812 800 770 800 L 310 800 Q 268 800 268 758 L 268 500 Q 268 480 282 468 Z" fill="#F5EFE3"/>
+        <rect x="468" y="544" width="56" height="196" rx="28" fill="#0E5C43"/>
+        <rect x="556" y="544" width="56" height="196" rx="28" fill="#0E5C43"/>
+      </svg>
+      Casa <b>Onze</b>
+    </a>
+    <nav aria-label="Seções da página">
+      <a href="#escalacao">Escalação</a>
+      <a href="#onzefoot">OnzeFoot</a>
+      <a href="#a-casa">A casa</a>
+      <a href="https://github.com/casa-onze" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ===== HERO ===== -->
+  <section class="hero" aria-label="Apresentação">
+    <div>
+      <div class="kickoff">
+        <div class="halfway" aria-hidden="true"></div>
+        <svg class="circle-svg" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="49" pathLength="1"/>
+        </svg>
+        <svg class="logo" viewBox="0 0 1080 1080" role="img" aria-label="Logo da Casa Onze: uma casa formada pelo número onze">
+          <rect width="1080" height="1080" rx="190" fill="#0E5C43"/>
+          <path d="M 540 248 L 798 468 Q 812 480 812 500 L 812 758 Q 812 800 770 800 L 310 800 Q 268 800 268 758 L 268 500 Q 268 480 282 468 Z" fill="#F5EFE3"/>
+          <rect x="468" y="544" width="56" height="196" rx="28" fill="#0E5C43"/>
+          <rect x="556" y="544" width="56" height="196" rx="28" fill="#0E5C43"/>
+        </svg>
+      </div>
+      <span class="eyebrow">Estúdio independente · Brasil</span>
+      <h1 class="display">O lar dos produtos <span class="ouro">Onze</span>.</h1>
+      <p class="lede">A Casa Onze é uma casa brasileira de jogos e produtos de mídia. O primeiro a entrar em campo: <strong>OnzeFoot</strong>, um game de gestão de futebol feito com alma de torcedor.</p>
+      <div class="ctas">
+        <a class="btn btn-ouro" href="#onzefoot">Conhecer o OnzeFoot</a>
+        <a class="btn btn-giz" href="https://instagram.com/casa.onze" target="_blank" rel="noopener">Seguir os bastidores</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ESCALAÇÃO ===== -->
+  <section id="escalacao" class="linha-giz">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">A escalação</span>
+        <h2 class="display">Os titulares da casa</h2>
+      </div>
+      <ul class="roster">
+        <li class="reveal">
+          <span class="num" aria-hidden="true">10</span>
+          <div>
+            <h3>OnzeFoot</h3>
+            <p>Gestão de futebol. O craque da casa: monte seu elenco, arme o time e dispute temporada após temporada — leve, direto e viciante.</p>
+          </div>
+          <span class="chip chip-campo">Em campo</span>
+        </li>
+        <li class="reveal">
+          <span class="num" aria-hidden="true">9</span>
+          <div>
+            <h3>OnzeCard</h3>
+            <p>Cartas colecionáveis com os craques do universo OnzeFoot. Do digital para o físico, do jogo para a sua coleção.</p>
+          </div>
+          <span class="chip chip-aquecendo">Aquecendo</span>
+        </li>
+        <li class="reveal vaga">
+          <span class="num" aria-hidden="true">—</span>
+          <div>
+            <h3>Vaga aberta</h3>
+            <p>O próximo produto ainda está no vestiário.</p>
+          </div>
+          <span class="chip chip-banco">No banco</span>
+        </li>
+      </ul>
+      <p class="legenda reveal">Em campo = em desenvolvimento ativo &nbsp;·&nbsp; Aquecendo = em conceito &nbsp;·&nbsp; No banco = futuro</p>
+    </div>
+  </section>
+
+  <!-- ===== ONZEFOOT ===== -->
+  <section id="onzefoot" class="creme">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Casa Onze apresenta</span>
+        <h2 class="display">OnzeFoot</h2>
+      </div>
+      <p class="lede reveal">Um manager de futebol no espírito dos clássicos que rodavam em qualquer PC: você cuida do elenco, define a estratégia e decide o jogo. Profundidade na gestão, simplicidade na tela — e o pé fincado no gramado brasileiro.</p>
+      <div class="honesta reveal">
+        <strong>Em desenvolvimento aberto.</strong> Sem data marcada e sem promessa furada: o jogo sai quando estiver bom. Até lá, o devlog mostra cada passo — acertos, tropeços e tudo que acontece nos bastidores.
+      </div>
+      <div class="fatos reveal" aria-label="Características do OnzeFoot">
+        <span>Leve de verdade</span>
+        <span>Para PC</span>
+        <span>Gestão profunda</span>
+        <span>Feito no Brasil</span>
+      </div>
+      <div class="ctas reveal">
+        <a class="btn btn-verde" href="https://instagram.com/casa.onze" target="_blank" rel="noopener">Acompanhar o devlog</a>
+        <a class="btn btn-verde-out" href="https://github.com/casa-onze" target="_blank" rel="noopener">Casa Onze no GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== A CASA ===== -->
+  <section id="a-casa" class="linha-giz">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">A casa</span>
+      </div>
+      <p class="quote reveal">No futebol, <span class="ouro">“o onze”</span> é o time titular. É o nome da casa — e o número que todo produto veste.</p>
+      <p class="casa-txt reveal">A Casa Onze é um estúdio independente, pequeno por escolha e honesto por princípio. Aqui o processo aparece: o que deu certo, o que quebrou e o que vem a seguir. Cada produto nasce do mesmo universo — e veste a mesma camisa.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot">
+    <a class="wordmark" href="#" aria-label="Casa Onze — voltar ao topo">
+      <svg viewBox="0 0 1080 1080" role="img" aria-hidden="true">
+        <rect width="1080" height="1080" rx="170" fill="#0E5C43"/>
+        <path d="M 540 248 L 798 468 Q 812 480 812 500 L 812 758 Q 812 800 770 800 L 310 800 Q 268 800 268 758 L 268 500 Q 268 480 282 468 Z" fill="#F5EFE3"/>
+        <rect x="468" y="544" width="56" height="196" rx="28" fill="#0E5C43"/>
+        <rect x="556" y="544" width="56" height="196" rx="28" fill="#0E5C43"/>
+      </svg>
+      Casa <b>Onze</b>
+    </a>
+    <div class="foot-links">
+      <a href="https://github.com/casa-onze" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://instagram.com/casa.onze" target="_blank" rel="noopener">Instagram</a>
+    </div>
+    <small>© 2026 Casa Onze · Estúdio independente · Feito em Pernambuco, Brasil</small>
+  </div>
+</footer>
+
+<script>
+  // revela as seções conforme o scroll (respeita reduced motion via CSS)
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
